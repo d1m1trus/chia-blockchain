@@ -290,7 +290,13 @@ def update_verify_signature_request(request: Dict[str, Any], prefix_hex_values: 
 
 
 @pytest.mark.asyncio
-async def test_send_transaction(wallet_rpc_environment: WalletRpcTestEnvironment):
+async def test_send_transaction(
+    wallet_rpc_environment: WalletRpcTestEnvironment,
+    consensus_mode: Mode,
+):
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env: WalletRpcTestEnvironment = wallet_rpc_environment
 
     wallet_2: Wallet = env.wallet_2.wallet
@@ -335,7 +341,10 @@ async def test_send_transaction(wallet_rpc_environment: WalletRpcTestEnvironment
 
 
 @pytest.mark.asyncio
-async def test_push_transactions(wallet_rpc_environment: WalletRpcTestEnvironment):
+async def test_push_transactions(wallet_rpc_environment: WalletRpcTestEnvironment, consensus_mode: Mode):
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env: WalletRpcTestEnvironment = wallet_rpc_environment
 
     wallet: Wallet = env.wallet_1.wallet
@@ -363,7 +372,10 @@ async def test_push_transactions(wallet_rpc_environment: WalletRpcTestEnvironmen
 
 
 @pytest.mark.asyncio
-async def test_get_balance(wallet_rpc_environment: WalletRpcTestEnvironment):
+async def test_get_balance(wallet_rpc_environment: WalletRpcTestEnvironment, consensus_mode: Mode):
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env = wallet_rpc_environment
     wallet: Wallet = env.wallet_1.wallet
     wallet_node: WalletNode = env.wallet_1.node
@@ -379,7 +391,10 @@ async def test_get_balance(wallet_rpc_environment: WalletRpcTestEnvironment):
 
 
 @pytest.mark.asyncio
-async def test_get_farmed_amount(wallet_rpc_environment: WalletRpcTestEnvironment):
+async def test_get_farmed_amount(wallet_rpc_environment: WalletRpcTestEnvironment, consensus_mode: Mode):
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env = wallet_rpc_environment
     wallet: Wallet = env.wallet_1.wallet
     full_node_api: FullNodeSimulator = env.full_node.api
@@ -403,7 +418,10 @@ async def test_get_farmed_amount(wallet_rpc_environment: WalletRpcTestEnvironmen
 
 
 @pytest.mark.asyncio
-async def test_get_farmed_amount_with_fee(wallet_rpc_environment: WalletRpcTestEnvironment):
+async def test_get_farmed_amount_with_fee(wallet_rpc_environment: WalletRpcTestEnvironment, consensus_mode: Mode):
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env = wallet_rpc_environment
     wallet: Wallet = env.wallet_1.wallet
     full_node_api: FullNodeSimulator = env.full_node.api
@@ -430,7 +448,10 @@ async def test_get_farmed_amount_with_fee(wallet_rpc_environment: WalletRpcTestE
 
 
 @pytest.mark.asyncio
-async def test_get_timestamp_for_height(wallet_rpc_environment: WalletRpcTestEnvironment):
+async def test_get_timestamp_for_height(wallet_rpc_environment: WalletRpcTestEnvironment, consensus_mode: Mode):
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env: WalletRpcTestEnvironment = wallet_rpc_environment
 
     full_node_api: FullNodeSimulator = env.full_node.api
@@ -465,7 +486,11 @@ async def test_create_signed_transaction(
     fee: int,
     select_coin: bool,
     is_cat: bool,
+    consensus_mode: Mode,
 ):
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env: WalletRpcTestEnvironment = wallet_rpc_environment
 
     wallet_2: Wallet = env.wallet_2.wallet
@@ -542,7 +567,12 @@ async def test_create_signed_transaction(
 
 
 @pytest.mark.asyncio
-async def test_create_signed_transaction_with_coin_announcement(wallet_rpc_environment: WalletRpcTestEnvironment):
+async def test_create_signed_transaction_with_coin_announcement(
+    wallet_rpc_environment: WalletRpcTestEnvironment, consensus_mode: Mode
+):
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env: WalletRpcTestEnvironment = wallet_rpc_environment
 
     wallet_2: Wallet = env.wallet_2.wallet
@@ -573,7 +603,12 @@ async def test_create_signed_transaction_with_coin_announcement(wallet_rpc_envir
 
 
 @pytest.mark.asyncio
-async def test_create_signed_transaction_with_puzzle_announcement(wallet_rpc_environment: WalletRpcTestEnvironment):
+async def test_create_signed_transaction_with_puzzle_announcement(
+    wallet_rpc_environment: WalletRpcTestEnvironment, consensus_mode: Mode
+):
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env: WalletRpcTestEnvironment = wallet_rpc_environment
 
     wallet_2: Wallet = env.wallet_2.wallet
@@ -602,7 +637,12 @@ async def test_create_signed_transaction_with_puzzle_announcement(wallet_rpc_env
 
 
 @pytest.mark.asyncio
-async def test_create_signed_transaction_with_excluded_coins(wallet_rpc_environment: WalletRpcTestEnvironment) -> None:
+async def test_create_signed_transaction_with_excluded_coins(
+    wallet_rpc_environment: WalletRpcTestEnvironment, consensus_mode: Mode
+) -> None:
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env: WalletRpcTestEnvironment = wallet_rpc_environment
     wallet_1: Wallet = env.wallet_1.wallet
     wallet_1_rpc: WalletRpcClient = env.wallet_1.rpc_client
@@ -635,7 +675,10 @@ async def test_create_signed_transaction_with_excluded_coins(wallet_rpc_environm
 
 
 @pytest.mark.asyncio
-async def test_spend_clawback_coins(wallet_rpc_environment: WalletRpcTestEnvironment):
+async def test_spend_clawback_coins(wallet_rpc_environment: WalletRpcTestEnvironment, consensus_mode: Mode):
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env: WalletRpcTestEnvironment = wallet_rpc_environment
 
     wallet_1_node: WalletNode = env.wallet_1.node
@@ -737,7 +780,10 @@ async def test_spend_clawback_coins(wallet_rpc_environment: WalletRpcTestEnviron
 
 
 @pytest.mark.asyncio
-async def test_send_transaction_multi(wallet_rpc_environment: WalletRpcTestEnvironment):
+async def test_send_transaction_multi(wallet_rpc_environment: WalletRpcTestEnvironment, consensus_mode: Mode):
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env: WalletRpcTestEnvironment = wallet_rpc_environment
 
     wallet_2: Wallet = env.wallet_2.wallet
@@ -783,7 +829,10 @@ async def test_send_transaction_multi(wallet_rpc_environment: WalletRpcTestEnvir
 
 
 @pytest.mark.asyncio
-async def test_get_transactions(wallet_rpc_environment: WalletRpcTestEnvironment):
+async def test_get_transactions(wallet_rpc_environment: WalletRpcTestEnvironment, consensus_mode: Mode):
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env: WalletRpcTestEnvironment = wallet_rpc_environment
 
     wallet: Wallet = env.wallet_1.wallet
@@ -858,7 +907,10 @@ async def test_get_transactions(wallet_rpc_environment: WalletRpcTestEnvironment
 
 
 @pytest.mark.asyncio
-async def test_get_transaction_count(wallet_rpc_environment: WalletRpcTestEnvironment):
+async def test_get_transaction_count(wallet_rpc_environment: WalletRpcTestEnvironment, consensus_mode: Mode):
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env: WalletRpcTestEnvironment = wallet_rpc_environment
 
     full_node_api: FullNodeSimulator = env.full_node.api
@@ -880,7 +932,10 @@ async def test_get_transaction_count(wallet_rpc_environment: WalletRpcTestEnviro
 
 
 @pytest.mark.asyncio
-async def test_cat_endpoints(wallet_rpc_environment: WalletRpcTestEnvironment):
+async def test_cat_endpoints(wallet_rpc_environment: WalletRpcTestEnvironment, consensus_mode: Mode):
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env: WalletRpcTestEnvironment = wallet_rpc_environment
 
     wallet_node: WalletNode = env.wallet_1.node
@@ -1018,7 +1073,10 @@ async def test_cat_endpoints(wallet_rpc_environment: WalletRpcTestEnvironment):
 
 
 @pytest.mark.asyncio
-async def test_offer_endpoints(wallet_rpc_environment: WalletRpcTestEnvironment):
+async def test_offer_endpoints(wallet_rpc_environment: WalletRpcTestEnvironment, consensus_mode: Mode):
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env: WalletRpcTestEnvironment = wallet_rpc_environment
 
     wallet_node: WalletNode = env.wallet_1.node
@@ -1221,7 +1279,12 @@ async def test_offer_endpoints(wallet_rpc_environment: WalletRpcTestEnvironment)
 
 
 @pytest.mark.asyncio
-async def test_get_coin_records_by_names(wallet_rpc_environment: WalletRpcTestEnvironment) -> None:
+async def test_get_coin_records_by_names(
+    wallet_rpc_environment: WalletRpcTestEnvironment, consensus_mode: Mode
+) -> None:
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env: WalletRpcTestEnvironment = wallet_rpc_environment
     wallet_node: WalletNode = env.wallet_1.node
     client: WalletRpcClient = env.wallet_1.rpc_client
@@ -1272,7 +1335,10 @@ async def test_get_coin_records_by_names(wallet_rpc_environment: WalletRpcTestEn
 
 
 @pytest.mark.asyncio
-async def test_did_endpoints(wallet_rpc_environment: WalletRpcTestEnvironment):
+async def test_did_endpoints(wallet_rpc_environment: WalletRpcTestEnvironment, consensus_mode: Mode):
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env: WalletRpcTestEnvironment = wallet_rpc_environment
 
     wallet_1: Wallet = env.wallet_1.wallet
@@ -1373,7 +1439,10 @@ async def test_did_endpoints(wallet_rpc_environment: WalletRpcTestEnvironment):
 
 
 @pytest.mark.asyncio
-async def test_nft_endpoints(wallet_rpc_environment: WalletRpcTestEnvironment):
+async def test_nft_endpoints(wallet_rpc_environment: WalletRpcTestEnvironment, consensus_mode: Mode):
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env: WalletRpcTestEnvironment = wallet_rpc_environment
     wallet_1_node: WalletNode = env.wallet_1.node
     wallet_1_rpc: WalletRpcClient = env.wallet_1.rpc_client
@@ -1464,7 +1533,10 @@ async def test_nft_endpoints(wallet_rpc_environment: WalletRpcTestEnvironment):
 
 
 @pytest.mark.asyncio
-async def test_key_and_address_endpoints(wallet_rpc_environment: WalletRpcTestEnvironment):
+async def test_key_and_address_endpoints(wallet_rpc_environment: WalletRpcTestEnvironment, consensus_mode: Mode):
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env: WalletRpcTestEnvironment = wallet_rpc_environment
 
     wallet: Wallet = env.wallet_1.wallet
@@ -1589,7 +1661,10 @@ async def test_key_and_address_endpoints(wallet_rpc_environment: WalletRpcTestEn
 
 
 @pytest.mark.asyncio
-async def test_select_coins_rpc(wallet_rpc_environment: WalletRpcTestEnvironment):
+async def test_select_coins_rpc(wallet_rpc_environment: WalletRpcTestEnvironment, consensus_mode: Mode):
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env: WalletRpcTestEnvironment = wallet_rpc_environment
 
     wallet_2: Wallet = env.wallet_2.wallet
@@ -1662,9 +1737,10 @@ async def test_select_coins_rpc(wallet_rpc_environment: WalletRpcTestEnvironment
 
 
 @pytest.mark.asyncio
-async def test_get_coin_records_rpc(
-    wallet_rpc_environment: WalletRpcTestEnvironment,
-) -> None:
+async def test_get_coin_records_rpc(wallet_rpc_environment: WalletRpcTestEnvironment, consensus_mode: Mode) -> None:
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env: WalletRpcTestEnvironment = wallet_rpc_environment
     wallet_node: WalletNode = env.wallet_1.node
     client: WalletRpcClient = env.wallet_1.rpc_client
@@ -1783,8 +1859,11 @@ async def test_get_coin_records_rpc_limits(
 
 @pytest.mark.asyncio
 async def test_get_coin_records_rpc_failures(
-    wallet_rpc_environment: WalletRpcTestEnvironment,
+    wallet_rpc_environment: WalletRpcTestEnvironment, consensus_mode: Mode
 ) -> None:
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env: WalletRpcTestEnvironment = wallet_rpc_environment
     client: WalletRpcClient = env.wallet_1.rpc_client
     rpc_server: Optional[RpcServer] = wallet_rpc_environment.wallet_1.service.rpc_server
@@ -1829,7 +1908,10 @@ async def test_get_coin_records_rpc_failures(
 
 
 @pytest.mark.asyncio
-async def test_notification_rpcs(wallet_rpc_environment: WalletRpcTestEnvironment):
+async def test_notification_rpcs(wallet_rpc_environment: WalletRpcTestEnvironment, consensus_mode: Mode):
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env: WalletRpcTestEnvironment = wallet_rpc_environment
 
     wallet_2: Wallet = env.wallet_2.wallet
@@ -2053,7 +2135,10 @@ async def test_get_auto_claim(wallet_rpc_environment: WalletRpcTestEnvironment):
 
 
 @pytest.mark.asyncio
-async def test_set_wallet_resync_on_startup(wallet_rpc_environment: WalletRpcTestEnvironment):
+async def test_set_wallet_resync_on_startup(wallet_rpc_environment: WalletRpcTestEnvironment, consensus_mode: Mode):
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env: WalletRpcTestEnvironment = wallet_rpc_environment
     full_node_api: FullNodeSimulator = env.full_node.api
     client: WalletRpcClient = env.wallet_1.rpc_client
@@ -2142,7 +2227,12 @@ async def test_set_wallet_resync_on_startup(wallet_rpc_environment: WalletRpcTes
 
 
 @pytest.mark.asyncio
-async def test_set_wallet_resync_on_startup_disable(wallet_rpc_environment: WalletRpcTestEnvironment):
+async def test_set_wallet_resync_on_startup_disable(
+    wallet_rpc_environment: WalletRpcTestEnvironment, consensus_mode: Mode
+):
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env: WalletRpcTestEnvironment = wallet_rpc_environment
     full_node_api: FullNodeSimulator = env.full_node.api
     client: WalletRpcClient = env.wallet_1.rpc_client
@@ -2181,7 +2271,10 @@ async def test_set_wallet_resync_on_startup_disable(wallet_rpc_environment: Wall
 
 
 @pytest.mark.asyncio
-async def test_set_wallet_resync_schema(wallet_rpc_environment: WalletRpcTestEnvironment):
+async def test_set_wallet_resync_schema(wallet_rpc_environment: WalletRpcTestEnvironment, consensus_mode: Mode):
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env: WalletRpcTestEnvironment = wallet_rpc_environment
     full_node_api: FullNodeSimulator = env.full_node.api
     await generate_funds(full_node_api, env.wallet_1)
@@ -2209,7 +2302,10 @@ async def test_set_wallet_resync_schema(wallet_rpc_environment: WalletRpcTestEnv
 
 
 @pytest.mark.asyncio
-async def test_cat_spend_run_tail(wallet_rpc_environment: WalletRpcTestEnvironment):
+async def test_cat_spend_run_tail(wallet_rpc_environment: WalletRpcTestEnvironment, consensus_mode: Mode):
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env: WalletRpcTestEnvironment = wallet_rpc_environment
 
     wallet_node: WalletNode = env.wallet_1.node
@@ -2285,7 +2381,10 @@ async def test_cat_spend_run_tail(wallet_rpc_environment: WalletRpcTestEnvironme
 
 
 @pytest.mark.asyncio
-async def test_get_balances(wallet_rpc_environment: WalletRpcTestEnvironment):
+async def test_get_balances(wallet_rpc_environment: WalletRpcTestEnvironment, consensus_mode: Mode):
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     env: WalletRpcTestEnvironment = wallet_rpc_environment
 
     client: WalletRpcClient = env.wallet_1.rpc_client
