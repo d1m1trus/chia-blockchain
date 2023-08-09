@@ -21,6 +21,7 @@ from chia.wallet.trading.offer import Offer
 from chia.wallet.trading.trade_status import TradeStatus
 from chia.wallet.uncurried_puzzle import uncurry_puzzle
 from chia.wallet.util.debug_spend_bundle import disassemble
+from tests.conftest import Mode
 from tests.wallet.nft_wallet.test_nft_1_offers import mempool_not_empty
 
 
@@ -483,7 +484,11 @@ async def test_nft_offer_nft_for_cat(
     two_wallet_nodes: Any,
     trusted: Any,
     reuse_puzhash: bool,
+    consensus_mode: Mode,
 ) -> None:
+    if consensus_mode not in [Mode.PLAIN, Mode.HARD_FORK_2_0]:
+        pytest.skip("limit to plain and hard fork to save time")
+
     full_nodes, wallets, _ = two_wallet_nodes
     full_node_api: FullNodeSimulator = full_nodes[0]
     full_node_server = full_node_api.server
