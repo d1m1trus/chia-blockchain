@@ -3770,7 +3770,7 @@ class WalletRpcApi:
         }
 
     @tx_endpoint
-    async def crcat_approve_pending(self, request, extra_conditions: List[Condition]) -> Dict:
+    async def crcat_approve_pending(self, request, extra_conditions: Tuple[Condition, ...]) -> Dict:
         """
         Moving any "pending approval" CR-CATs into the spendable balance of the wallet
         :param request: Required 'wallet_id'. Optional 'min_amount_to_claim' (deafult: full balance).
