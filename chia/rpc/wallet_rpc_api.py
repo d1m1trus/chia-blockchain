@@ -628,7 +628,7 @@ class WalletRpcApi:
         return response
 
     @tx_endpoint
-    async def create_new_wallet(self, request: Dict, extra_conditions: List[Condition]) -> EndpointResult:
+    async def create_new_wallet(self, request: Dict, extra_conditions: Tuple[Condition, ...]) -> EndpointResult:
         wallet_state_manager = self.service.wallet_state_manager
 
         if await self.service.wallet_state_manager.synced() is False:
@@ -996,7 +996,7 @@ class WalletRpcApi:
         }
 
     @tx_endpoint
-    async def send_transaction(self, request, extra_conditions: List[Condition]) -> EndpointResult:
+    async def send_transaction(self, request, extra_conditions: Tuple[Condition, ...]) -> EndpointResult:
         if await self.service.wallet_state_manager.synced() is False:
             raise ValueError("Wallet needs to be fully synced before sending transactions")
 
@@ -1080,7 +1080,7 @@ class WalletRpcApi:
         return {"transaction": transaction, "transaction_id": tr.name}
 
     @tx_endpoint
-    async def spend_clawback_coins(self, request, extra_conditions: List[Condition]) -> EndpointResult:
+    async def spend_clawback_coins(self, request, extra_conditions: Tuple[Condition, ...]) -> EndpointResult:
         """Spend clawback coins that were sent (to claw them back) or received (to claim them).
 
         :param coin_ids: list of coin ids to be spent
@@ -1376,7 +1376,7 @@ class WalletRpcApi:
         return {}
 
     @tx_endpoint
-    async def send_notification(self, request, extra_conditions: List[Condition]) -> EndpointResult:
+    async def send_notification(self, request, extra_conditions: Tuple[Condition, ...]) -> EndpointResult:
         tx: TransactionRecord = await self.service.wallet_state_manager.notification_manager.send_new_notification(
             bytes32.from_hexstr(request["target"]),
             bytes.fromhex(request["message"]),
@@ -1459,7 +1459,7 @@ class WalletRpcApi:
         }
 
     @tx_endpoint
-    async def sign_message_by_id(self, request, extra_conditions: List[Condition]) -> EndpointResult:
+    async def sign_message_by_id(self, request, extra_conditions: Tuple[Condition, ...]) -> EndpointResult:
         """
         Given a NFT/DID ID, sign the message by the P2 private key.
         :param request:
@@ -1540,7 +1540,9 @@ class WalletRpcApi:
         return {"stray_cats": cats}
 
     @tx_endpoint
-    async def cat_spend(self, request, extra_conditions: List[Condition], hold_lock: bool = True) -> EndpointResult:
+    async def cat_spend(
+        self, request, extra_conditions: Tuple[Condition, ...], hold_lock: bool = True
+    ) -> EndpointResult:
         if await self.service.wallet_state_manager.synced() is False:
             raise ValueError("Wallet needs to be fully synced.")
         wallet_id = uint32(request["wallet_id"])
@@ -1667,7 +1669,7 @@ class WalletRpcApi:
             return {"wallet_id": wallet.id(), "name": (wallet.get_name())}
 
     @tx_endpoint
-    async def create_offer_for_ids(self, request, extra_conditions: List[Condition]) -> EndpointResult:
+    async def create_offer_for_ids(self, request, extra_conditions: Tuple[Condition, ...]) -> EndpointResult:
         offer: Dict[str, int] = request["offer"]
         fee: uint64 = uint64(request.get("fee", 0))
         validate_only: bool = request.get("validate_only", False)
@@ -1791,7 +1793,7 @@ class WalletRpcApi:
         }
 
     @tx_endpoint
-    async def take_offer(self, request, extra_conditions: List[Condition]) -> EndpointResult:
+    async def take_offer(self, request, extra_conditions: Tuple[Condition, ...]) -> EndpointResult:
         offer_hex: str = request["offer"]
 
         ###
@@ -1892,7 +1894,7 @@ class WalletRpcApi:
         return {"total": total, "my_offers_count": my_offers_count, "taken_offers_count": taken_offers_count}
 
     @tx_endpoint
-    async def cancel_offer(self, request: Dict, extra_conditions: List[Condition]) -> EndpointResult:
+    async def cancel_offer(self, request: Dict, extra_conditions: Tuple[Condition, ...]) -> EndpointResult:
         wsm = self.service.wallet_state_manager
         secure = request["secure"]
         trade_id = bytes32.from_hexstr(request["trade_id"])
@@ -1904,7 +1906,7 @@ class WalletRpcApi:
         return {}
 
     @tx_endpoint
-    async def cancel_offers(self, request: Dict, extra_conditions: List[Condition]) -> EndpointResult:
+    async def cancel_offers(self, request: Dict, extra_conditions: Tuple[Condition, ...]) -> EndpointResult:
         secure = request["secure"]
         batch_fee: uint64 = uint64(request.get("batch_fee", 0))
         batch_size = request.get("batch_size", 5)
@@ -1971,7 +1973,7 @@ class WalletRpcApi:
         return {"success": True, "wallet_id": wallet_id, "name": name}
 
     @tx_endpoint
-    async def did_update_recovery_ids(self, request, extra_conditions: List[Condition]) -> EndpointResult:
+    async def did_update_recovery_ids(self, request, extra_conditions: Tuple[Condition, ...]) -> EndpointResult:
         wallet_id = uint32(request["wallet_id"])
         wallet = self.service.wallet_state_manager.get_wallet(id=wallet_id, required_type=DIDWallet)
         recovery_list = []
@@ -1996,7 +1998,7 @@ class WalletRpcApi:
         return {"success": success}
 
     @tx_endpoint
-    async def did_message_spend(self, request, extra_conditions: List[Condition]) -> EndpointResult:
+    async def did_message_spend(self, request, extra_conditions: Tuple[Condition, ...]) -> EndpointResult:
         wallet_id = uint32(request["wallet_id"])
         wallet = self.service.wallet_state_manager.get_wallet(id=wallet_id, required_type=DIDWallet)
         coin_announcements: Set[bytes] = set([])
@@ -2238,7 +2240,7 @@ class WalletRpcApi:
             return {"success": True, "latest_coin_id": coin_state.coin.name().hex()}
 
     @tx_endpoint
-    async def did_update_metadata(self, request, extra_conditions: List[Condition]) -> EndpointResult:
+    async def did_update_metadata(self, request, extra_conditions: Tuple[Condition, ...]) -> EndpointResult:
         wallet_id = uint32(request["wallet_id"])
         wallet = self.service.wallet_state_manager.get_wallet(id=wallet_id, required_type=DIDWallet)
         metadata: Dict[str, str] = {}
@@ -2339,7 +2341,7 @@ class WalletRpcApi:
         return {"success": True, "pubkey": pubkey}
 
     @tx_endpoint
-    async def did_create_attest(self, request, extra_conditions: List[Condition]) -> EndpointResult:
+    async def did_create_attest(self, request, extra_conditions: Tuple[Condition, ...]) -> EndpointResult:
         wallet_id = uint32(request["wallet_id"])
         wallet = self.service.wallet_state_manager.get_wallet(id=wallet_id, required_type=DIDWallet)
         async with self.service.wallet_state_manager.lock:
@@ -2404,7 +2406,7 @@ class WalletRpcApi:
         return {"wallet_id": wallet_id, "success": True, "backup_data": did_wallet.create_backup()}
 
     @tx_endpoint
-    async def did_transfer_did(self, request, extra_conditions: List[Condition]) -> EndpointResult:
+    async def did_transfer_did(self, request, extra_conditions: Tuple[Condition, ...]) -> EndpointResult:
         if await self.service.wallet_state_manager.synced() is False:
             raise ValueError("Wallet needs to be fully synced.")
         wallet_id = uint32(request["wallet_id"])
@@ -2430,7 +2432,7 @@ class WalletRpcApi:
     ##########################################################################################
 
     @tx_endpoint
-    async def nft_mint_nft(self, request, extra_conditions: List[Condition]) -> EndpointResult:
+    async def nft_mint_nft(self, request, extra_conditions: Tuple[Condition, ...]) -> EndpointResult:
         log.debug("Got minting RPC request: %s", request)
         wallet_id = uint32(request["wallet_id"])
         assert self.service.wallet_state_manager
@@ -2541,7 +2543,7 @@ class WalletRpcApi:
         return {"wallet_id": wallet_id, "success": True, "nft_list": nft_info_list}
 
     @tx_endpoint
-    async def nft_set_nft_did(self, request, extra_conditions: List[Condition]):
+    async def nft_set_nft_did(self, request, extra_conditions: Tuple[Condition, ...]):
         wallet_id = uint32(request["wallet_id"])
         nft_wallet = self.service.wallet_state_manager.get_wallet(id=wallet_id, required_type=NFTWallet)
         did_id = request.get("did_id", b"")
@@ -2563,7 +2565,7 @@ class WalletRpcApi:
         return {"wallet_id": wallet_id, "success": True, "spend_bundle": spend_bundle}
 
     @tx_endpoint
-    async def nft_set_did_bulk(self, request, extra_conditions: List[Condition]):
+    async def nft_set_did_bulk(self, request, extra_conditions: Tuple[Condition, ...]):
         """
         Bulk set DID for NFTs across different wallets.
         accepted `request` dict keys:
@@ -2655,7 +2657,7 @@ class WalletRpcApi:
             raise ValueError("Couldn't set DID on given NFT")
 
     @tx_endpoint
-    async def nft_transfer_bulk(self, request, extra_conditions: List[Condition]):
+    async def nft_transfer_bulk(self, request, extra_conditions: Tuple[Condition, ...]):
         """
         Bulk transfer NFTs to an address.
         accepted `request` dict keys:
@@ -2797,7 +2799,7 @@ class WalletRpcApi:
         return {"success": True}
 
     @tx_endpoint
-    async def nft_transfer_nft(self, request, extra_conditions: List[Condition]) -> EndpointResult:
+    async def nft_transfer_nft(self, request, extra_conditions: Tuple[Condition, ...]) -> EndpointResult:
         wallet_id = uint32(request["wallet_id"])
         address = request["target_address"]
         if isinstance(address, str):
@@ -2904,7 +2906,7 @@ class WalletRpcApi:
         return {"success": True, "nft_info": nft_info}
 
     @tx_endpoint
-    async def nft_add_uri(self, request, extra_conditions: List[Condition]) -> EndpointResult:
+    async def nft_add_uri(self, request, extra_conditions: Tuple[Condition, ...]) -> EndpointResult:
         wallet_id = uint32(request["wallet_id"])
         # Note metadata updater can only add one uri for one field per spend.
         # If you want to add multiple uris for one field, you need to spend multiple times.
@@ -2938,7 +2940,7 @@ class WalletRpcApi:
         )
 
     @tx_endpoint
-    async def nft_mint_bulk(self, request, extra_conditions: List[Condition]) -> EndpointResult:
+    async def nft_mint_bulk(self, request, extra_conditions: Tuple[Condition, ...]) -> EndpointResult:
         if await self.service.wallet_state_manager.synced() is False:
             raise ValueError("Wallet needs to be fully synced.")
         wallet_id = uint32(request["wallet_id"])
@@ -3144,7 +3146,7 @@ class WalletRpcApi:
 
     @tx_endpoint
     async def create_signed_transaction(
-        self, request, extra_conditions: List[Condition], hold_lock: bool = True
+        self, request, extra_conditions: Tuple[Condition, ...], hold_lock: bool = True
     ) -> EndpointResult:
         if "wallet_id" in request:
             wallet_id = uint32(request["wallet_id"])
@@ -3359,7 +3361,7 @@ class WalletRpcApi:
     # DataLayer Wallet
     ##########################################################################################
     @tx_endpoint
-    async def create_new_dl(self, request, extra_conditions: List[Condition]) -> Dict:
+    async def create_new_dl(self, request, extra_conditions: Tuple[Condition, ...]) -> Dict:
         """Initialize the DataLayer Wallet (only one can exist)"""
         if self.service.wallet_state_manager is None:
             raise ValueError("The wallet service is not currently initialized")
@@ -3448,7 +3450,7 @@ class WalletRpcApi:
         return {"singletons": records_json}
 
     @tx_endpoint
-    async def dl_update_root(self, request, extra_conditions: List[Condition]) -> Dict:
+    async def dl_update_root(self, request, extra_conditions: Tuple[Condition, ...]) -> Dict:
         """Get the singleton record for the latest singleton of a launcher ID"""
         if self.service.wallet_state_manager is None:
             raise ValueError("The wallet service is not currently initialized")
@@ -3466,7 +3468,7 @@ class WalletRpcApi:
             return {"tx_record": records[0].to_json_dict_convenience(self.service.config)}
 
     @tx_endpoint
-    async def dl_update_multiple(self, request, extra_conditions: List[Condition]) -> Dict:
+    async def dl_update_multiple(self, request, extra_conditions: Tuple[Condition, ...]) -> Dict:
         """Update multiple singletons with new merkle roots"""
         if self.service.wallet_state_manager is None:
             return {"success": False, "error": "not_initialized"}
@@ -3536,7 +3538,7 @@ class WalletRpcApi:
         return {"mirrors": mirrors_json}
 
     @tx_endpoint
-    async def dl_new_mirror(self, request, extra_conditions: List[Condition]) -> Dict:
+    async def dl_new_mirror(self, request, extra_conditions: Tuple[Condition, ...]) -> Dict:
         """Add a new on chain message for a specific singleton"""
         if self.service.wallet_state_manager is None:
             raise ValueError("The wallet service is not currently initialized")
@@ -3558,7 +3560,7 @@ class WalletRpcApi:
         }
 
     @tx_endpoint
-    async def dl_delete_mirror(self, request, extra_conditions: List[Condition]) -> Dict:
+    async def dl_delete_mirror(self, request, extra_conditions: Tuple[Condition, ...]) -> Dict:
         """Remove an existing mirror for a specific singleton"""
         if self.service.wallet_state_manager is None:
             raise ValueError("The wallet service is not currently initialized")
@@ -3583,7 +3585,7 @@ class WalletRpcApi:
     # Verified Credential
     ##########################################################################################
     @tx_endpoint
-    async def vc_mint(self, request, extra_conditions: List[Condition]) -> Dict:
+    async def vc_mint(self, request, extra_conditions: Tuple[Condition, ...]) -> Dict:
         """
         Mint a verified credential using the assigned DID
         :param request: We require 'did_id' that will be minting the VC and options for a new 'target_address' as well
@@ -3665,7 +3667,7 @@ class WalletRpcApi:
         }
 
     @tx_endpoint
-    async def vc_spend(self, request, extra_conditions: List[Condition]) -> Dict:
+    async def vc_spend(self, request, extra_conditions: Tuple[Condition, ...]) -> Dict:
         """
         Spend a verified credential
         :param request: Required 'vc_id' launcher id of the vc we wish to spend. Optional paramaters for a 'new_puzhash'
@@ -3737,7 +3739,7 @@ class WalletRpcApi:
         return {"proofs": vc_proofs.key_value_pairs}
 
     @tx_endpoint
-    async def vc_revoke(self, request, extra_conditions: List[Condition]) -> Dict:
+    async def vc_revoke(self, request, extra_conditions: Tuple[Condition, ...]) -> Dict:
         """
         Revoke an on chain VC provided the correct DID is available
         :param request: required 'vc_parent_id' for the VC coin. Standard transaction params 'fee' & 'reuse_puzhash'.
