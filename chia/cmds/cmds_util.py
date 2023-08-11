@@ -4,8 +4,9 @@ import logging
 import traceback
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Any, AsyncIterator, Dict, List, Optional, Tuple, Type, TypeVar
+from typing import Any, AsyncIterator, Callable, Dict, List, Optional, Tuple, Type, TypeVar
 
+import click
 from aiohttp import ClientConnectorCertificateError, ClientConnectorError
 
 from chia.daemon.keychain_proxy import KeychainProxy, connect_to_keychain_and_validate
@@ -224,3 +225,21 @@ async def get_wallet_client(
     ):
         new_fp = await get_wallet(root_path, wallet_client, fingerprint)
         yield wallet_client, new_fp, config
+
+
+def timelock_args(func: Callable[..., None]) -> Callable[..., None]:
+    return click.option(
+        "--valid-at",
+        help="UNIX timestamp at which the associated transactions become valid",
+        type=int,
+        required=False,
+        default=None,
+    )(
+        click.option(
+            "--expires-at",
+            help="UNIX timestamp at which the associated transactions expire",
+            type=int,
+            required=False,
+            default=None,
+        )(func)
+    )
