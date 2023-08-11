@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pathlib import Path
+from secrets import token_hex
 from shutil import rmtree
 
 import pytest
@@ -24,10 +24,7 @@ def get_profile_path(starting_string: str) -> str:
     """
     Returns the name of a profile that does not exist yet.
     """
-    i = 0
-    while Path(SIMULATOR_ROOT_PATH / (starting_string + str(i))).exists():
-        i += 1
-    return starting_string + str(i)
+    return token_hex(8)
 
 
 def test_every_simulator_command() -> None:
