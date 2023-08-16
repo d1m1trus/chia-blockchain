@@ -250,9 +250,16 @@ class VCStore:
 
     async def add_vc_proofs(self, vc_proofs: VCProofs) -> None:
         async with self.db_wrapper.writer_maybe_transaction() as conn:
-            await conn.execute(
-                "INSERT INTO vc_proofs VALUES(?, ?)", (vc_proofs.root().hex(), bytes(vc_proofs.as_program()))
-            )
+            root: bytes32 = vc_proofs.root()
+            exists_cursor = await conn.execute("SELECT EXISTS(SELECT 1 FROM vc_proofs WHERE root=?)", (root.hex(),))
+            root_exists = await exists_cursor.fetchone()
+            await exists_cursor.close()
+            if root_exists is not None and root_exists[0] != 0:
+                existing_proof = await self.get_proofs_for_root(root)
+                assert existing_proof is not None
+                if existing_proof == vc_proofs:
+                    return
+            await conn.execute("INSERT INTO vc_proofs VALUES(?, ?)", (root.hex(), bytes(vc_proofs.as_program())))
 
     async def get_proofs_for_root(self, root: bytes32) -> Optional[VCProofs]:
         async with self.db_wrapper.reader_no_transaction() as conn:
